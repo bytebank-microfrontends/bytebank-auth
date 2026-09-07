@@ -31,6 +31,11 @@ describe("ByteBank auth login", () => {
 
     expect(screen.getByRole("main")).toBeInTheDocument();
     expect(screen.getByText("ByteBank")).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: "Cliente ByteBank usando o aplicativo no celular",
+      })
+    ).toBeInTheDocument();
   });
 
   it("renders the login title", () => {

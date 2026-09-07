@@ -1,24 +1,31 @@
+import loginHero from "../assets/login-hero.webp";
+import bytebankSymbol from "../assets/bytebank-symbol.png";
+
 export default function AuthBrandPanel() {
   return (
     <aside className="bb-auth-brand" aria-label="ByteBank">
-      <div className="bb-auth-brand__mark" aria-hidden="true">
-        <span>BB</span>
-      </div>
+      <img
+        className="bb-auth-brand__image"
+        src={loginHero}
+        alt="Cliente ByteBank usando o aplicativo no celular"
+      />
 
+      <div className="bb-auth-brand__signature">
+        <img
+          className="bb-auth-brand__symbol"
+          src={bytebankSymbol}
+          alt=""
+          aria-hidden="true"
+        />
+        <span className="bb-auth-brand__brand">ByteBank</span>
+      </div>
       <div className="bb-auth-brand__content">
-        <p className="bb-auth-brand__name">ByteBank</p>
         <h2 className="bb-auth-brand__title">
-          Seu banco. Sua vida financeira, em um só lugar.
+          Sua vida financeira, mais simples todos os dias.
         </h2>
         <p className="bb-auth-brand__description">
-          Segurança e praticidade para cuidar do seu dinheiro.
+          Seguran&ccedil;a, controle e praticidade em um s&oacute; lugar.
         </p>
-      </div>
-
-      <div className="bb-auth-brand__signal" aria-hidden="true">
-        <span />
-        <span />
-        <span />
       </div>
     </aside>
   );

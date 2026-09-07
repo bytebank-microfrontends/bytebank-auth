@@ -1,7 +1,24 @@
+html,
+body,
+#root,
+[id="single-spa-application:@bytebank/auth"],
+[id^="single-spa-application"] {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
 .bb-auth {
   min-height: 100vh;
-  padding: var(--bb-space-7, 40px);
-  background: var(--bb-color-background, #f7f6fa);
+  min-height: 100dvh;
+  width: 100%;
+  padding: 0;
+  background: var(--bb-color-surface, #ffffff);
   color: var(--bb-color-text-primary, #211a29);
   font-family: var(
     --bb-font-family,
@@ -22,125 +39,123 @@
 
 .bb-auth__shell {
   display: grid;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(420px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
   width: 100%;
-  max-width: 1180px;
-  min-height: calc(100vh - 80px);
-  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
-  border: 1px solid var(--bb-color-border, #e8e3ec);
-  border-radius: var(--bb-radius-lg, 20px);
   background: var(--bb-color-surface, #ffffff);
-  box-shadow: var(--bb-shadow-card, 0 18px 44px rgba(32, 22, 40, 0.1));
 }
 
 .bb-auth-brand {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-width: 0;
-  padding: 44px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(32px, 5vw, 56px);
   overflow: hidden;
-  background: radial-gradient(
-      circle at 80% 14%,
-      rgba(255, 255, 255, 0.16),
-      transparent 28%
-    ),
-    linear-gradient(135deg, #17121f 0%, #27183a 48%, #6420bf 100%);
+  background: #21112e;
   color: var(--bb-color-text-inverse, #ffffff);
 }
 
-.bb-auth-brand::after {
+.bb-auth-brand::before {
   position: absolute;
-  right: 36px;
-  bottom: 40px;
-  width: 168px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.34);
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+      180deg,
+      rgba(20, 11, 31, 0.62) 0%,
+      rgba(36, 18, 55, 0.18) 40%,
+      rgba(20, 11, 31, 0.7) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(100, 32, 191, 0.26) 0%,
+      rgba(100, 32, 191, 0.08) 54%,
+      rgba(20, 11, 31, 0.1) 100%
+    );
   content: "";
 }
 
-.bb-auth-brand__mark {
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+.bb-auth-brand__image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% center;
 }
 
-.bb-auth-brand__mark span {
-  color: var(--bb-color-text-inverse, #ffffff);
-  font-size: 17px;
+.bb-auth-brand__signature,
+.bb-auth-brand__content {
+  position: relative;
+  z-index: 2;
+}
+
+.bb-auth-brand__signature {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.bb-auth-brand__symbol {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.bb-auth-brand__brand {
+  margin: 0;
+  color: currentColor;
+  font-size: 24px;
   font-weight: 750;
   letter-spacing: 0;
 }
 
 .bb-auth-brand__content {
-  position: relative;
-  z-index: 1;
   max-width: 420px;
 }
 
-.bb-auth-brand__name {
-  margin: 0 0 18px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .bb-auth-brand__title {
+  max-width: 390px;
   margin: 0;
   color: var(--bb-color-text-inverse, #ffffff);
-  font-size: 44px;
+  font-size: clamp(34px, 2.7vw, 40px);
   font-weight: 750;
   letter-spacing: 0;
-  line-height: 1.06;
+  line-height: 1.12;
 }
 
 .bb-auth-brand__description {
-  max-width: 340px;
-  margin: 18px 0 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 16px;
+  max-width: 360px;
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1.55;
-}
-
-.bb-auth-brand__signal {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  width: min(100%, 320px);
-}
-
-.bb-auth-brand__signal span {
-  display: block;
-  height: 5px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.bb-auth-brand__signal span:first-child {
-  background: rgba(255, 255, 255, 0.58);
+  line-height: 1.5;
 }
 
 .bb-auth__form-panel {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
-  padding: 48px;
+  padding: clamp(40px, 5vw, 72px);
   background: var(--bb-color-surface, #ffffff);
 }
 
 .bb-auth-login {
   width: 100%;
-  max-width: 420px;
+  max-width: 460px;
 }
 
 .bb-auth-login__header {
@@ -149,33 +164,33 @@
 
 .bb-auth-login__eyebrow {
   display: block;
-  margin-bottom: 8px;
-  color: var(--bb-color-primary, #a43df2);
+  margin-bottom: 9px;
+  color: var(--bb-color-primary, #6420bf);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.06em;
 }
 
 .bb-auth-login__title {
   margin: 0;
   color: var(--bb-color-text-primary, #211a29);
-  font-size: 36px;
+  font-size: clamp(34px, 3vw, 38px);
   font-weight: 750;
   letter-spacing: 0;
-  line-height: 1.1;
+  line-height: 1.12;
 }
 
 .bb-auth-login__description {
   margin: 10px 0 0;
   color: var(--bb-color-text-secondary, #756c7e);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.55;
 }
 
 .bb-auth-form {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 17px;
 }
 
 .bb-auth-field {
@@ -184,40 +199,39 @@
 
 .bb-auth-field__label {
   display: block;
-  margin-bottom: 7px;
-  color: var(--bb-color-text-secondary, #756c7e);
-  font-size: 12px;
+  margin-bottom: 8px;
+  color: var(--bb-color-text-primary, #211a29);
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .bb-auth-field__control {
   width: 100%;
-  min-height: 42px;
-  padding: 0 13px;
-  border: 1px solid var(--bb-color-border, #e8e3ec);
-  border-radius: var(--bb-radius-md, 14px);
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--bb-color-border, #ded6e8);
+  border-radius: var(--bb-radius-md, 12px);
   outline: none;
   background: var(--bb-color-surface, #ffffff);
   color: var(--bb-color-text-primary, #211a29);
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   letter-spacing: 0;
   transition: border-color 160ms ease, box-shadow 160ms ease,
     background-color 160ms ease;
 }
 
 .bb-auth-field__control::placeholder {
-  color: var(--bb-color-text-secondary, #756c7e);
+  color: var(--bb-color-text-secondary, #8a8192);
 }
 
 .bb-auth-field__control:focus-visible,
 .bb-auth-password__toggle:focus-visible,
 .bb-auth-form__link-button:focus-visible,
 .bb-auth-form__submit:focus-visible {
-  border-color: var(--bb-color-primary, #a43df2);
-  box-shadow: 0 0 0 3px rgba(164, 61, 242, 0.14);
+  border-color: var(--bb-color-primary, #6420bf);
+  box-shadow: 0 0 0 3px rgba(100, 32, 191, 0.16);
 }
 
 .bb-auth-field__control[aria-invalid="true"] {
@@ -225,38 +239,44 @@
 }
 
 .bb-auth-password {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  position: relative;
+  display: flex;
   align-items: center;
 }
 
 .bb-auth-password__control {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  padding-right: 88px;
+  padding-right: 86px;
 }
 
 .bb-auth-password__toggle {
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 72px;
-  min-height: 32px;
-  margin-right: 5px;
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  min-width: 68px;
+  min-height: 34px;
+  padding: 0 10px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 8px;
   outline: none;
-  background: var(--bb-color-surface-soft, #f0edf4);
+  background: transparent;
   color: var(--bb-color-primary, #6420bf);
   font: inherit;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: 0;
   cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.bb-auth-password__toggle:hover {
+  background: var(--bb-color-surface-soft, #f2eef7);
 }
 
 .bb-auth-form__support {
   display: flex;
   justify-content: flex-end;
+  margin-top: -4px;
 }
 
 .bb-auth-form__link-button {
@@ -274,18 +294,22 @@
   cursor: pointer;
 }
 
+.bb-auth-form__link-button:hover {
+  color: #4f159d;
+}
+
 .bb-auth-form__submit {
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
   margin-top: 2px;
   border: 1px solid transparent;
-  border-radius: var(--bb-radius-md, 14px);
+  border-radius: var(--bb-radius-md, 12px);
   outline: none;
-  background: var(--bb-color-primary, #a43df2);
+  background: var(--bb-color-primary, #6420bf);
   color: var(--bb-color-text-inverse, #ffffff);
   font: inherit;
-  font-size: 14px;
-  font-weight: 750;
+  font-size: 15px;
+  font-weight: 800;
   letter-spacing: 0;
   cursor: pointer;
   transition: transform 160ms ease, box-shadow 160ms ease,
@@ -293,21 +317,21 @@
 }
 
 .bb-auth-form__submit:hover:not(:disabled) {
-  background: #8e2fd8;
-  box-shadow: 0 12px 28px rgba(100, 32, 191, 0.22);
+  background: #5719aa;
+  box-shadow: 0 12px 26px rgba(100, 32, 191, 0.2);
   transform: translateY(-1px);
 }
 
 .bb-auth-form__submit:disabled {
   cursor: wait;
-  opacity: 0.72;
+  opacity: 0.64;
 }
 
 .bb-auth-feedback {
   margin: 0;
   padding: 11px 12px;
   border: 1px solid var(--bb-color-border, #e8e3ec);
-  border-radius: var(--bb-radius-md, 14px);
+  border-radius: var(--bb-radius-md, 12px);
   font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
@@ -332,80 +356,115 @@
 
 .bb-auth-feedback--info {
   border-color: rgba(100, 32, 191, 0.18);
-  background: rgba(164, 61, 242, 0.08);
+  background: rgba(100, 32, 191, 0.08);
   color: var(--bb-color-primary, #6420bf);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bb-auth-field__control,
+  .bb-auth-password__toggle,
   .bb-auth-form__submit {
     transition: none;
   }
 
-  .bb-auth-form__submit:hover:not(:disabled) {
-    transform: none;
+  .bb-auth-form__submit:hover:not(:disabled),
+  .bb-auth-password__toggle {
+    transform: translateY(-50%);
   }
 }
 
-@media (max-width: 920px) {
+@media (max-width: 980px) {
   .bb-auth__shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(280px, 0.84fr) minmax(380px, 1.16fr);
   }
 
   .bb-auth-brand {
-    min-height: 260px;
-    padding: 32px;
+    padding: 34px;
   }
 
-  .bb-auth-brand__content {
-    max-width: 640px;
-    margin-top: 44px;
+  .bb-auth-brand__image {
+    object-position: 35% center;
   }
 
-  .bb-auth-brand__title {
-    font-size: 34px;
+  .bb-auth-brand__symbol {
+    width: 36px;
+    height: 36px;
   }
 
-  .bb-auth-brand__signal,
-  .bb-auth-brand::after {
-    display: none;
+  .bb-auth-brand__brand {
+    font-size: 22px;
   }
 }
 
-@media (max-width: 640px) {
-  .bb-auth {
-    padding: 0;
+@media (max-width: 760px) {
+  .bb-auth__shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(178px, 30dvh) auto;
   }
 
+  .bb-auth-brand {
+    min-height: 178px;
+    padding: 24px 22px;
+  }
+
+  .bb-auth-brand__image {
+    object-position: 35% 35%;
+  }
+
+  .bb-auth-brand__content {
+    max-width: 420px;
+  }
+
+  .bb-auth-brand__title {
+    max-width: 330px;
+    font-size: 24px;
+  }
+
+  .bb-auth-brand__description {
+    max-width: 320px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  .bb-auth__form-panel {
+    align-items: flex-start;
+    padding: 34px 22px 38px;
+  }
+
+  .bb-auth-login {
+    max-width: none;
+  }
+
+  .bb-auth-login__title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 380px) {
   .bb-auth__shell {
-    min-height: 100vh;
-    border: 0;
-    border-radius: 0;
+    grid-template-rows: 156px auto;
   }
 
   .bb-auth-brand {
     min-height: 156px;
-    padding: 24px 18px;
+    padding: 20px 16px;
   }
 
-  .bb-auth-brand__mark {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
+  .bb-auth-brand__signature {
+    gap: 10px;
   }
 
-  .bb-auth-brand__content {
-    margin-top: 26px;
+  .bb-auth-brand__symbol {
+    width: 32px;
+    height: 32px;
   }
 
-  .bb-auth-brand__name {
-    margin-bottom: 8px;
-    font-size: 12px;
+  .bb-auth-brand__brand {
+    font-size: 20px;
   }
 
   .bb-auth-brand__title {
-    font-size: 24px;
-    line-height: 1.12;
+    font-size: 20px;
   }
 
   .bb-auth-brand__description {
@@ -413,11 +472,14 @@
   }
 
   .bb-auth__form-panel {
-    align-items: start;
-    padding: 30px 18px 34px;
+    padding: 28px 16px 34px;
+  }
+
+  .bb-auth-login__header {
+    margin-bottom: 26px;
   }
 
   .bb-auth-login__title {
-    font-size: 30px;
+    font-size: 28px;
   }
 }
