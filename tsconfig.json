@@ -2,6 +2,7 @@
   "extends": "ts-config-single-spa",
   "compilerOptions": {
     "jsx": "react-jsx",
+    "strict": true,
     "declarationDir": "dist"
   },
   "files": ["src/bytebank-auth.tsx"],
