@@ -1,4 +1,5 @@
 import * as authMock from "../data/auth.mock";
+import type { MockAuthSessionUser } from "@bytebank/util";
 
 export interface LoginCredentials {
   identifier: string;
@@ -8,6 +9,7 @@ export interface LoginCredentials {
 export interface AuthSuccess {
   success: true;
   message: "Acesso validado com sucesso.";
+  user: MockAuthSessionUser;
 }
 
 export interface AuthFailure {
@@ -43,6 +45,7 @@ export async function authenticate(
     return {
       success: true,
       message: SUCCESS_MESSAGE,
+      user: authMock.demoUser,
     };
   } catch (_error) {
     return {

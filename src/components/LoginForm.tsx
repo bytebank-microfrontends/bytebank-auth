@@ -5,6 +5,7 @@ import {
   authenticate,
   TECHNICAL_ERROR_MESSAGE,
 } from "../services/auth.service";
+import { completeMockLogin } from "../services/mock-auth-session.service";
 import { isValidIdentifier } from "../utils/auth-validation";
 
 const EMPTY_IDENTIFIER_MESSAGE = "Informe seu CPF ou e-mail.";
@@ -75,6 +76,10 @@ export default function LoginForm() {
         message: result.message,
         variant: result.success ? "success" : "error",
       });
+
+      if (result.success) {
+        completeMockLogin(result.user);
+      }
     } catch (_error) {
       setFeedback({
         message: TECHNICAL_ERROR_MESSAGE,

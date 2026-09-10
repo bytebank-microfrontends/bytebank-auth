@@ -37,3 +37,13 @@ declare module "*.svg" {
   const src: string;
   export default src;
 }
+
+declare module "@bytebank/util" {
+  export interface MockAuthSessionUser {
+    name: string;
+    email: string;
+    accountType: string;
+  }
+
+  export function setMockAuthSession(user: MockAuthSessionUser): void;
+}

@@ -7,6 +7,12 @@ const demoAccount = {
   password: "bytebank123",
 } as const;
 
+export const demoUser = {
+  name: "Cliente Demo ByteBank",
+  email: demoAccount.identifier,
+  accountType: "checking",
+} as const;
+
 export interface MockAuthResponse {
   authenticated: boolean;
 }

@@ -1,3 +1,4 @@
+const path = require("path");
 const { merge } = require("webpack-merge");
 const singleSpaDefaults = require("webpack-config-single-spa-react-ts");
 
@@ -11,7 +12,20 @@ module.exports = (webpackConfigEnv, argv) => {
   });
 
   if (!webpackConfigEnv.standalone) {
-    defaultConfig.externals.push("react/jsx-runtime", "react/jsx-dev-runtime");
+    defaultConfig.externals.push(
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+      "@bytebank/util"
+    );
+  } else {
+    defaultConfig.resolve = defaultConfig.resolve || {};
+    defaultConfig.resolve.alias = {
+      ...(defaultConfig.resolve.alias || {}),
+      "@bytebank/util$": path.resolve(
+        __dirname,
+        "src/standalone/bytebank-util.ts"
+      ),
+    };
   }
 
   return merge(defaultConfig, {

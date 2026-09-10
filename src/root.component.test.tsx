@@ -1,10 +1,37 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { navigateToUrl } from "single-spa";
+import { setMockAuthSession } from "@bytebank/util";
 import Root from "./root.component";
 import * as authMock from "./data/auth.mock";
 import { bootstrap, mount, unmount } from "./bytebank-auth";
 
+jest.mock("single-spa", () => ({
+  navigateToUrl: jest.fn(),
+}));
+
+jest.mock(
+  "@bytebank/util",
+  () => ({
+    setMockAuthSession: jest.fn(),
+  }),
+  { virtual: true }
+);
+
 const DEMO_EMAIL = "demo@bytebank.com.br";
 const DEMO_PASSWORD = "bytebank123";
+const AUTH_SUCCESS_REDIRECT_PATH = "/bytebank-orchestrator/";
+const DEMO_SESSION_USER = {
+  name: "Cliente Demo ByteBank",
+  email: DEMO_EMAIL,
+  accountType: "checking",
+};
+
+const mockedNavigateToUrl = navigateToUrl as jest.MockedFunction<
+  typeof navigateToUrl
+>;
+const mockedSetMockAuthSession = setMockAuthSession as jest.MockedFunction<
+  typeof setMockAuthSession
+>;
 
 const renderLogin = () => render(<Root />);
 
@@ -22,6 +49,10 @@ const submitLogin = () => {
 };
 
 describe("ByteBank auth login", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -153,6 +184,63 @@ describe("ByteBank auth login", () => {
     expect(
       await screen.findByText("Acesso validado com sucesso.")
     ).toBeInTheDocument();
+  });
+
+  it("registers the mock auth session for valid login", async () => {
+    renderLogin();
+    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+
+    submitLogin();
+
+    await waitFor(() =>
+      expect(mockedSetMockAuthSession).toHaveBeenCalledWith(DEMO_SESSION_USER)
+    );
+    expect(mockedSetMockAuthSession).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not send the password to the mock auth session", async () => {
+    renderLogin();
+    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+
+    submitLogin();
+
+    await waitFor(() =>
+      expect(mockedSetMockAuthSession).toHaveBeenCalledTimes(1)
+    );
+
+    const sessionUser = mockedSetMockAuthSession.mock.calls[0][0];
+    expect(sessionUser).not.toHaveProperty("password");
+    expect(Object.keys(sessionUser).sort()).toEqual([
+      "accountType",
+      "email",
+      "name",
+    ]);
+  });
+
+  it("navigates to the orchestrator after valid login", async () => {
+    renderLogin();
+    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+
+    submitLogin();
+
+    await waitFor(() =>
+      expect(mockedNavigateToUrl).toHaveBeenCalledWith(
+        AUTH_SUCCESS_REDIRECT_PATH
+      )
+    );
+    expect(mockedNavigateToUrl).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not create a mock auth session for invalid login", async () => {
+    renderLogin();
+    fillCredentials(DEMO_EMAIL, "senha-errada");
+
+    submitLogin();
+
+    expect(
+      await screen.findByText(/CPF\/e-mail ou senha inv/i)
+    ).toBeInTheDocument();
+    expect(mockedSetMockAuthSession).not.toHaveBeenCalled();
   });
 
   it("shows the loading state while submitting", async () => {
