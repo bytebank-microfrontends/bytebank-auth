@@ -1,7 +1,18 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { navigateToUrl } from "single-spa";
 import { setMockAuthSession } from "@bytebank/util";
 import Root from "./root.component";
+import {
+  ALL_COOKIE_CONSENT_PREFERENCES,
+  COOKIE_CONSENT_STORAGE_KEY,
+  CookieConsentPreferences,
+} from "./components/CookieConsent";
 import * as authMock from "./data/auth.mock";
 import { bootstrap, mount, unmount } from "./bytebank-auth";
 
@@ -48,9 +59,16 @@ const submitLogin = () => {
   fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
 };
 
+const getStoredCookieConsentPreferences = (): CookieConsentPreferences =>
+  JSON.parse(
+    window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY) ?? "{}"
+  ) as CookieConsentPreferences;
+
 describe("ByteBank auth login", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -99,6 +117,218 @@ describe("ByteBank auth login", () => {
     renderLogin();
 
     expect(screen.getByText("Ambiente seguro ByteBank")).toBeInTheDocument();
+  });
+
+  it("shows the cookie consent banner when there is no saved consent", () => {
+    renderLogin();
+
+    expect(
+      screen.getByText(
+        "Usamos cookies para segurança, funcionamento do portal e melhoria da experiência. Você pode revisar suas preferências na Definição de Cookies."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Aceitar todos" })
+    ).toBeInTheDocument();
+  });
+
+  it("opens the cookie preferences dialog", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+
+    expect(
+      screen.getByRole("dialog", { name: "Definição de Cookies" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Necessários" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Analíticos" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Personalização" })
+    ).toBeInTheDocument();
+  });
+
+  it("keeps necessary cookies always active and disabled", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+
+    const necessaryToggle = screen.getByLabelText("Sempre ativos");
+
+    expect(necessaryToggle).toBeChecked();
+    expect(necessaryToggle).toBeDisabled();
+    expect(screen.getByText("Sempre ativos")).toBeInTheDocument();
+    expect(
+      screen.getByText("Necessários para funcionamento e segurança do portal.")
+    ).toBeInTheDocument();
+  });
+
+  it("updates analytics and personalization toggles", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+
+    const analyticsToggle = screen.getByLabelText("Analíticos");
+    const personalizationToggle = screen.getByLabelText("Personalização");
+
+    expect(analyticsToggle).not.toBeChecked();
+    expect(personalizationToggle).not.toBeChecked();
+
+    fireEvent.click(analyticsToggle);
+    fireEvent.click(personalizationToggle);
+
+    expect(analyticsToggle).toBeChecked();
+    expect(personalizationToggle).toBeChecked();
+    expect(
+      screen.getByText("Ajudam a entender como o portal é utilizado.")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Permitem lembrar preferências de experiência.")
+    ).toBeInTheDocument();
+  });
+
+  it("saves selected cookie preferences as structured data", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+    fireEvent.click(screen.getByLabelText("Analíticos"));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Salvar preferências" })
+    );
+
+    expect(getStoredCookieConsentPreferences()).toEqual({
+      necessary: true,
+      analytics: true,
+      personalization: false,
+    });
+  });
+
+  it("hides the cookie consent banner after saving preferences", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Salvar preferências" })
+    );
+
+    expect(
+      screen.queryByText(
+        "Usamos cookies para segurança, funcionamento do portal e melhoria da experiência. Você pode revisar suas preferências na Definição de Cookies."
+      )
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("saves all cookie preferences when accepting all", () => {
+    renderLogin();
+
+    fireEvent.click(screen.getByRole("button", { name: "Aceitar todos" }));
+
+    expect(getStoredCookieConsentPreferences()).toEqual(
+      ALL_COOKIE_CONSENT_PREFERENCES
+    );
+    expect(
+      screen.queryByText(
+        "Usamos cookies para segurança, funcionamento do portal e melhoria da experiência. Você pode revisar suas preferências na Definição de Cookies."
+      )
+    ).not.toBeInTheDocument();
+  });
+
+  it("saves all cookie preferences from the preferences dialog", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+    fireEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Aceitar todos",
+      })
+    );
+
+    expect(getStoredCookieConsentPreferences()).toEqual(
+      ALL_COOKIE_CONSENT_PREFERENCES
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("does not show the cookie consent banner when a decision is already saved", () => {
+    window.localStorage.setItem(
+      COOKIE_CONSENT_STORAGE_KEY,
+      JSON.stringify({
+        necessary: true,
+        analytics: false,
+        personalization: false,
+      })
+    );
+
+    renderLogin();
+
+    expect(
+      screen.queryByRole("button", { name: "Aceitar todos" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("closes the cookie preferences dialog with the close button", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Fechar definição de cookies" })
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    ).toHaveFocus();
+  });
+
+  it("closes the cookie preferences dialog with Escape", () => {
+    renderLogin();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Definição de Cookies" })
+    );
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("does not save sensitive data in the cookie consent preference", () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    renderLogin();
+    fireEvent.click(screen.getByRole("button", { name: "Aceitar todos" }));
+
+    expect(setItemSpy).toHaveBeenCalledWith(
+      COOKIE_CONSENT_STORAGE_KEY,
+      JSON.stringify(ALL_COOKIE_CONSENT_PREFERENCES)
+    );
+    expect(window.localStorage.length).toBe(1);
+    expect(Object.keys(window.localStorage)).toEqual([
+      COOKIE_CONSENT_STORAGE_KEY,
+    ]);
+    expect(window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY)).not.toMatch(
+      /token|sess[aã]o|cpf|senha|password|529|bytebank123/i
+    );
   });
 
   it("renders the CPF field", () => {
@@ -324,8 +554,6 @@ describe("ByteBank auth login", () => {
   });
 
   it("does not persist authentication in localStorage or sessionStorage", async () => {
-    window.localStorage.clear();
-    window.sessionStorage.clear();
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     renderLogin();

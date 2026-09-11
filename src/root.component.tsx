@@ -1,4 +1,5 @@
 import AuthBrandPanel from "./components/AuthBrandPanel";
+import CookieConsent from "./components/CookieConsent";
 import LoginForm from "./components/LoginForm";
 import "./styles/auth.css";
 
@@ -15,6 +16,7 @@ export default function Root(_props: RootProps) {
           <LoginForm />
         </section>
       </div>
+      <CookieConsent />
     </main>
   );
 }
