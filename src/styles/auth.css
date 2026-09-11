@@ -142,10 +142,10 @@ body {
 
 .bb-auth-brand__portal {
   color: rgba(255, 255, 255, 0.88);
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 600;
   letter-spacing: 0;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .bb-auth__form-panel {
@@ -430,6 +430,10 @@ body {
     font-size: 22px;
   }
 
+  .bb-auth-brand__portal {
+    font-size: 22px;
+  }
+
   .bb-auth__form-panel {
     padding: 40px 32px;
   }
@@ -488,11 +492,11 @@ body {
   }
 
   .bb-auth-brand__brand {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .bb-auth-brand__portal {
-    font-size: 15px;
+    font-size: 22px;
   }
 
   .bb-auth__form-panel {

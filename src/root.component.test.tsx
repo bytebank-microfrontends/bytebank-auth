@@ -17,12 +17,12 @@ jest.mock(
   { virtual: true }
 );
 
-const DEMO_EMAIL = "demo@bytebank.com.br";
+const DEMO_CPF = "529.982.247-25";
 const DEMO_PASSWORD = "bytebank123";
 const AUTH_SUCCESS_REDIRECT_PATH = "/bytebank-orchestrator/";
 const DEMO_SESSION_USER = {
   name: "Cliente Demo ByteBank",
-  email: DEMO_EMAIL,
+  email: "cliente.demo@bytebank.com.br",
   accountType: "checking",
 };
 
@@ -35,9 +35,9 @@ const mockedSetMockAuthSession = setMockAuthSession as jest.MockedFunction<
 
 const renderLogin = () => render(<Root />);
 
-const fillCredentials = (identifier: string, password: string) => {
-  fireEvent.change(screen.getByLabelText("CPF ou e-mail"), {
-    target: { value: identifier },
+const fillCredentials = (cpf: string, password: string) => {
+  fireEvent.change(screen.getByLabelText("CPF"), {
+    target: { value: cpf },
   });
   fireEvent.change(screen.getByLabelText("Senha"), {
     target: { value: password },
@@ -101,11 +101,15 @@ describe("ByteBank auth login", () => {
     expect(screen.getByText("Ambiente seguro ByteBank")).toBeInTheDocument();
   });
 
-  it("renders the CPF or email field", () => {
+  it("renders the CPF field", () => {
     renderLogin();
 
-    expect(screen.getByLabelText("CPF ou e-mail")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("CPF ou e-mail")).toBeInTheDocument();
+    expect(screen.getByLabelText("CPF")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("CPF")).toBeInTheDocument();
+    expect(screen.queryByLabelText("CPF ou e-mail")).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText("CPF ou e-mail")
+    ).not.toBeInTheDocument();
   });
 
   it("renders the password field", () => {
@@ -131,9 +135,9 @@ describe("ByteBank auth login", () => {
 
     submitLogin();
 
-    expect(screen.getByText("Informe seu CPF ou e-mail.")).toBeInTheDocument();
+    expect(screen.getByText("Informe seu CPF.")).toBeInTheDocument();
     expect(screen.getByText("Informe sua senha.")).toBeInTheDocument();
-    expect(screen.getByLabelText("CPF ou e-mail")).toHaveAttribute(
+    expect(screen.getByLabelText("CPF")).toHaveAttribute(
       "aria-invalid",
       "true"
     );
@@ -143,15 +147,13 @@ describe("ByteBank auth login", () => {
     );
   });
 
-  it("rejects an invalid email", () => {
+  it("does not support email login", () => {
     renderLogin();
-    fillCredentials("demo@", DEMO_PASSWORD);
+    fillCredentials("demo@bytebank.com.br", DEMO_PASSWORD);
 
     submitLogin();
 
-    expect(
-      screen.getByText("Informe um CPF ou e-mail válido.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Informe um CPF válido.")).toBeInTheDocument();
   });
 
   it("rejects an invalid CPF", () => {
@@ -160,14 +162,12 @@ describe("ByteBank auth login", () => {
 
     submitLogin();
 
-    expect(
-      screen.getByText("Informe um CPF ou e-mail válido.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Informe um CPF válido.")).toBeInTheDocument();
   });
 
-  it("requires the password when the identifier is valid", () => {
+  it("requires the password when the CPF is valid", () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, "");
+    fillCredentials(DEMO_CPF, "");
 
     submitLogin();
 
@@ -176,12 +176,12 @@ describe("ByteBank auth login", () => {
 
   it("uses a generic message for invalid credentials", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, "senha-errada");
+    fillCredentials(DEMO_CPF, "senha-errada");
 
     submitLogin();
 
     expect(
-      await screen.findByText("CPF/e-mail ou senha inválidos.")
+      await screen.findByText("CPF ou senha inválidos.")
     ).toBeInTheDocument();
     expect(screen.queryByText(/senha incorreta/i)).not.toBeInTheDocument();
     expect(
@@ -194,7 +194,7 @@ describe("ByteBank auth login", () => {
 
   it("returns success for the demo credentials", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 
@@ -205,7 +205,7 @@ describe("ByteBank auth login", () => {
 
   it("registers the mock auth session for valid login", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 
@@ -217,7 +217,7 @@ describe("ByteBank auth login", () => {
 
   it("does not send the password to the mock auth session", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 
@@ -236,7 +236,7 @@ describe("ByteBank auth login", () => {
 
   it("navigates to the orchestrator after valid login", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 
@@ -250,19 +250,17 @@ describe("ByteBank auth login", () => {
 
   it("does not create a mock auth session for invalid login", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, "senha-errada");
+    fillCredentials(DEMO_CPF, "senha-errada");
 
     submitLogin();
 
-    expect(
-      await screen.findByText(/CPF\/e-mail ou senha inv/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/CPF ou senha inv/i)).toBeInTheDocument();
     expect(mockedSetMockAuthSession).not.toHaveBeenCalled();
   });
 
   it("shows the loading state while submitting", async () => {
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 
@@ -286,7 +284,7 @@ describe("ByteBank auth login", () => {
       .mockReturnValue(pendingAuthentication);
 
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     const submitButton = screen.getByRole("button", { name: "Entrar" });
     const form = submitButton.closest("form");
@@ -331,7 +329,7 @@ describe("ByteBank auth login", () => {
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     renderLogin();
-    fillCredentials(DEMO_EMAIL, DEMO_PASSWORD);
+    fillCredentials(DEMO_CPF, DEMO_PASSWORD);
 
     submitLogin();
 

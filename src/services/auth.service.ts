@@ -2,7 +2,7 @@ import * as authMock from "../data/auth.mock";
 import type { MockAuthSessionUser } from "@bytebank/util";
 
 export interface LoginCredentials {
-  identifier: string;
+  cpf: string;
   password: string;
 }
 
@@ -16,7 +16,7 @@ export interface AuthFailure {
   success: false;
   reason: "invalid-credentials" | "technical-error";
   message:
-    | "CPF/e-mail ou senha inválidos."
+    | "CPF ou senha inválidos."
     | "Não foi possível concluir o acesso agora. Tente novamente em alguns instantes.";
 }
 
@@ -25,7 +25,7 @@ export type AuthResult = AuthSuccess | AuthFailure;
 export const TECHNICAL_ERROR_MESSAGE =
   "Não foi possível concluir o acesso agora. Tente novamente em alguns instantes.";
 
-const INVALID_CREDENTIALS_MESSAGE = "CPF/e-mail ou senha inválidos.";
+const INVALID_CREDENTIALS_MESSAGE = "CPF ou senha inválidos.";
 const SUCCESS_MESSAGE = "Acesso validado com sucesso.";
 
 export async function authenticate(

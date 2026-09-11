@@ -1,11 +1,5 @@
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
 export function onlyDigits(value: string): string {
   return value.replace(/\D/g, "");
-}
-
-export function isValidEmail(value: string): boolean {
-  return EMAIL_PATTERN.test(value.trim());
 }
 
 export function isValidCpf(value: string): boolean {
@@ -24,12 +18,6 @@ export function isValidCpf(value: string): boolean {
   const secondDigit = calculateCpfCheckDigit(numbers.slice(0, 10), 11);
 
   return numbers[9] === firstDigit && numbers[10] === secondDigit;
-}
-
-export function isValidIdentifier(value: string): boolean {
-  const trimmedValue = value.trim();
-
-  return isValidEmail(trimmedValue) || isValidCpf(trimmedValue);
 }
 
 function calculateCpfCheckDigit(

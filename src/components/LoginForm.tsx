@@ -6,16 +6,16 @@ import {
   TECHNICAL_ERROR_MESSAGE,
 } from "../services/auth.service";
 import { completeMockLogin } from "../services/mock-auth-session.service";
-import { isValidIdentifier } from "../utils/auth-validation";
+import { isValidCpf } from "../utils/auth-validation";
 
-const EMPTY_IDENTIFIER_MESSAGE = "Informe seu CPF ou e-mail.";
-const INVALID_IDENTIFIER_MESSAGE = "Informe um CPF ou e-mail válido.";
+const EMPTY_CPF_MESSAGE = "Informe seu CPF.";
+const INVALID_CPF_MESSAGE = "Informe um CPF válido.";
 const EMPTY_PASSWORD_MESSAGE = "Informe sua senha.";
 const RECOVERY_UNAVAILABLE_MESSAGE =
   "Recuperação de senha estará disponível em breve.";
 
 interface LoginErrors {
-  identifier?: string;
+  cpf?: string;
   password?: string;
 }
 
@@ -27,7 +27,7 @@ type FeedbackState =
   | undefined;
 
 export default function LoginForm() {
-  const [identifier, setIdentifier] = useState("");
+  const [cpf, setCpf] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<LoginErrors>({});
   const [feedback, setFeedback] = useState<FeedbackState>();
@@ -36,12 +36,12 @@ export default function LoginForm() {
 
   const validateFields = (): LoginErrors => {
     const nextErrors: LoginErrors = {};
-    const trimmedIdentifier = identifier.trim();
+    const trimmedCpf = cpf.trim();
 
-    if (!trimmedIdentifier) {
-      nextErrors.identifier = EMPTY_IDENTIFIER_MESSAGE;
-    } else if (!isValidIdentifier(trimmedIdentifier)) {
-      nextErrors.identifier = INVALID_IDENTIFIER_MESSAGE;
+    if (!trimmedCpf) {
+      nextErrors.cpf = EMPTY_CPF_MESSAGE;
+    } else if (!isValidCpf(trimmedCpf)) {
+      nextErrors.cpf = INVALID_CPF_MESSAGE;
     }
 
     if (!password) {
@@ -62,7 +62,7 @@ export default function LoginForm() {
     setErrors(nextErrors);
     setFeedback(undefined);
 
-    if (nextErrors.identifier || nextErrors.password) {
+    if (nextErrors.cpf || nextErrors.password) {
       return;
     }
 
@@ -70,7 +70,7 @@ export default function LoginForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await authenticate({ identifier, password });
+      const result = await authenticate({ cpf, password });
 
       setFeedback({
         message: result.message,
@@ -98,9 +98,7 @@ export default function LoginForm() {
     });
   };
 
-  const identifierErrorId = errors.identifier
-    ? "bb-auth-identifier-error"
-    : undefined;
+  const cpfErrorId = errors.cpf ? "bb-auth-cpf-error" : undefined;
   const passwordErrorId = errors.password
     ? "bb-auth-password-error"
     : undefined;
@@ -120,26 +118,26 @@ export default function LoginForm() {
         <div className="bb-auth-field">
           <label
             className="bb-auth-field__label visually-hidden"
-            htmlFor="bb-auth-identifier"
+            htmlFor="bb-auth-cpf"
           >
-            CPF ou e-mail
+            CPF
           </label>
           <input
-            id="bb-auth-identifier"
-            name="identifier"
+            id="bb-auth-cpf"
+            name="cpf"
             type="text"
             autoComplete="username"
-            placeholder="CPF ou e-mail"
-            value={identifier}
-            onChange={(event) => setIdentifier(event.target.value)}
-            aria-invalid={Boolean(errors.identifier)}
-            aria-describedby={identifierErrorId}
+            placeholder="CPF"
+            value={cpf}
+            onChange={(event) => setCpf(event.target.value)}
+            aria-invalid={Boolean(errors.cpf)}
+            aria-describedby={cpfErrorId}
             className="bb-auth-field__control"
           />
-          {errors.identifier ? (
+          {errors.cpf ? (
             <AuthFeedback
-              id={identifierErrorId}
-              message={errors.identifier}
+              id={cpfErrorId}
+              message={errors.cpf}
               variant="error"
             />
           ) : null}
