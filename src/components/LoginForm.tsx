@@ -180,6 +180,24 @@ export default function LoginForm() {
         >
           {isSubmitting ? "Entrando..." : "Entrar"}
         </button>
+
+        <aside
+          className="bb-auth-security-note"
+          aria-labelledby="bb-auth-security-title"
+        >
+          <span className="bb-auth-security-note__icon" aria-hidden="true" />
+          <div>
+            <h2
+              id="bb-auth-security-title"
+              className="bb-auth-security-note__title"
+            >
+              Ambiente seguro ByteBank
+            </h2>
+            <p className="bb-auth-security-note__description">
+              Seus dados são protegidos durante o acesso.
+            </p>
+          </div>
+        </aside>
       </form>
     </div>
   );

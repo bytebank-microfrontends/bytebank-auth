@@ -77,6 +77,12 @@ describe("ByteBank auth login", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders the secure environment note", () => {
+    renderLogin();
+
+    expect(screen.getByText("Ambiente seguro ByteBank")).toBeInTheDocument();
+  });
+
   it("renders the CPF or email field", () => {
     renderLogin();
 
