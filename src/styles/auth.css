@@ -37,6 +37,18 @@ body {
   box-sizing: inherit;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .bb-auth__shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
@@ -230,48 +242,6 @@ body {
   border-color: var(--bb-color-primary, #6420bf);
 }
 
-.bb-auth-password {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.bb-auth-password__control {
-  padding-right: 82px;
-}
-
-.bb-auth-password__toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  min-width: 62px;
-  min-height: 30px;
-  padding: 0 8px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  outline: none;
-  background: transparent;
-  color: #5d4b70;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0;
-  cursor: pointer;
-  transform: translateY(-50%);
-  transition: background-color 160ms ease, color 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.bb-auth-password__toggle:hover {
-  background: rgba(100, 32, 191, 0.07);
-  color: var(--bb-color-primary, #6420bf);
-}
-
-.bb-auth-password__toggle:focus-visible {
-  color: var(--bb-color-primary, #6420bf);
-  box-shadow: 0 0 0 3px rgba(100, 32, 191, 0.12);
-}
-
 .bb-auth-form__support {
   display: flex;
   justify-content: flex-end;
@@ -404,8 +374,7 @@ body {
   line-height: 1.35;
 }
 
-.bb-auth-field + .bb-auth-feedback,
-.bb-auth-password + .bb-auth-feedback {
+.bb-auth-field + .bb-auth-feedback {
   margin-top: 8px;
 }
 
@@ -429,7 +398,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .bb-auth-field__control,
-  .bb-auth-password__toggle,
   .bb-auth-form__link-button,
   .bb-auth-form__submit {
     transition: none;
@@ -437,10 +405,6 @@ body {
 
   .bb-auth-form__submit:hover:not(:disabled) {
     transform: none;
-  }
-
-  .bb-auth-password__toggle {
-    transform: translateY(-50%);
   }
 }
 

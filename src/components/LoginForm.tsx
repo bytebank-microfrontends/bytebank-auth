@@ -118,7 +118,10 @@ export default function LoginForm() {
 
       <form className="bb-auth-form" onSubmit={handleSubmit} noValidate>
         <div className="bb-auth-field">
-          <label className="bb-auth-field__label" htmlFor="bb-auth-identifier">
+          <label
+            className="bb-auth-field__label visually-hidden"
+            htmlFor="bb-auth-identifier"
+          >
             CPF ou e-mail
           </label>
           <input
@@ -126,7 +129,7 @@ export default function LoginForm() {
             name="identifier"
             type="text"
             autoComplete="username"
-            placeholder="Digite seu CPF ou e-mail"
+            placeholder="CPF ou e-mail"
             value={identifier}
             onChange={(event) => setIdentifier(event.target.value)}
             aria-invalid={Boolean(errors.identifier)}

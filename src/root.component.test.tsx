@@ -105,32 +105,25 @@ describe("ByteBank auth login", () => {
     renderLogin();
 
     expect(screen.getByLabelText("CPF ou e-mail")).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText("Digite seu CPF ou e-mail")
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("CPF ou e-mail")).toBeInTheDocument();
   });
 
   it("renders the password field", () => {
     renderLogin();
 
     expect(screen.getByLabelText("Senha")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Digite sua senha")).toBeInTheDocument();
   });
 
-  it("starts with the password hidden", () => {
+  it("keeps the password field hidden without a visibility toggle", () => {
     renderLogin();
 
     expect(screen.getByLabelText("Senha")).toHaveAttribute("type", "password");
-  });
-
-  it("shows and hides the password", () => {
-    renderLogin();
-    const passwordField = screen.getByLabelText("Senha");
-
-    fireEvent.click(screen.getByRole("button", { name: "Mostrar senha" }));
-    expect(passwordField).toHaveAttribute("type", "text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Ocultar senha" }));
-    expect(passwordField).toHaveAttribute("type", "password");
+    expect(
+      screen.queryByRole("button", { name: /mostrar senha|ocultar senha/i })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Mostrar")).not.toBeInTheDocument();
+    expect(screen.queryByText("Ocultar")).not.toBeInTheDocument();
   });
 
   it("shows required messages on empty submit", () => {
