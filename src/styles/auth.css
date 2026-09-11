@@ -94,16 +94,14 @@ body {
 .bb-auth-brand__signature {
   position: relative;
   z-index: 2;
-}
-
-.bb-auth-brand__signature {
   display: inline-flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 8px;
   width: fit-content;
   margin-left: auto;
   color: rgba(255, 255, 255, 0.96);
   text-shadow: 0 1px 14px rgba(20, 11, 31, 0.34);
+  white-space: nowrap;
 }
 
 .bb-auth-brand__symbol {
@@ -114,12 +112,28 @@ body {
   flex: 0 0 auto;
 }
 
+.bb-auth-brand__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
 .bb-auth-brand__brand {
   margin: 0;
   color: currentColor;
   font-size: 24px;
   font-weight: 750;
   letter-spacing: 0;
+  line-height: 1;
+}
+
+.bb-auth-brand__portal {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
 }
 
 .bb-auth__form-panel {
@@ -138,6 +152,7 @@ body {
 
 .bb-auth-login__header {
   margin-bottom: 28px;
+  text-align: center;
 }
 
 .bb-auth-login__title {
@@ -500,7 +515,7 @@ body {
   }
 
   .bb-auth-brand__signature {
-    gap: 10px;
+    gap: 8px;
   }
 
   .bb-auth-brand__symbol {
@@ -510,6 +525,10 @@ body {
 
   .bb-auth-brand__brand {
     font-size: 20px;
+  }
+
+  .bb-auth-brand__portal {
+    font-size: 15px;
   }
 
   .bb-auth__form-panel {

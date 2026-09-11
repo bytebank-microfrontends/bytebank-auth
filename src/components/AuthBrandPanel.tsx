@@ -17,7 +17,10 @@ export default function AuthBrandPanel() {
           alt=""
           aria-hidden="true"
         />
-        <span className="bb-auth-brand__brand">ByteBank</span>
+        <div className="bb-auth-brand__copy">
+          <span className="bb-auth-brand__brand">ByteBank</span>
+          <span className="bb-auth-brand__portal">Portal do Cliente</span>
+        </div>
       </div>
     </aside>
   );
