@@ -108,12 +108,11 @@ export default function LoginForm() {
   return (
     <div className="bb-auth-login">
       <header className="bb-auth-login__header">
-        <span className="bb-auth-login__eyebrow">ACESSO SEGURO</span>
         <h1 id="bb-auth-title" className="bb-auth-login__title">
-          Bem-vindo ao ByteBank
+          Ol&aacute;
         </h1>
         <p className="bb-auth-login__description">
-          Informe seus dados para acessar sua conta.
+          No portal ByteBank voc&ecirc; acompanha sua vida financeira
         </p>
       </header>
 

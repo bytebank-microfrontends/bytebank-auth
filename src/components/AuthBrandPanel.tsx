@@ -19,14 +19,6 @@ export default function AuthBrandPanel() {
         />
         <span className="bb-auth-brand__brand">ByteBank</span>
       </div>
-      <div className="bb-auth-brand__content">
-        <h2 className="bb-auth-brand__title">
-          Sua vida financeira, mais simples todos os dias.
-        </h2>
-        <p className="bb-auth-brand__description">
-          Seguran&ccedil;a, controle e praticidade em um s&oacute; lugar.
-        </p>
-      </div>
     </aside>
   );
 }

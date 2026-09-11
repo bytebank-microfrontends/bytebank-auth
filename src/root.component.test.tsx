@@ -72,9 +72,26 @@ describe("ByteBank auth login", () => {
   it("renders the login title", () => {
     renderLogin();
 
+    expect(screen.getByRole("heading", { name: "Olá" })).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Bem-vindo ao ByteBank" })
+      screen.getByText("No portal ByteBank você acompanha sua vida financeira")
     ).toBeInTheDocument();
+  });
+
+  it("does not render removed login copy", () => {
+    renderLogin();
+
+    expect(screen.queryByText("ACESSO SEGURO")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bem-vindo ao ByteBank")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Informe seus dados para acessar sua conta.")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Sua vida financeira, mais simples todos os dias.")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Segurança, controle e praticidade em um só lugar.")
+    ).not.toBeInTheDocument();
   });
 
   it("renders the secure environment note", () => {
